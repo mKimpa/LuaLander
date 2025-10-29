@@ -7,16 +7,13 @@ public class LanderVisuals : MonoBehaviour
     [SerializeField] private ParticleSystem centerThrusterParticleSystem;
     [SerializeField] private ParticleSystem rightThrusterParticleSystem;
 
-    private Lander lander = null;
 
     private void Awake()
     {
-        lander = GetComponent<Lander>();
-
-        lander.OnUpForce += Lander_OnUpForce;
-        lander.OnLeftForce += Lander_OnLeftForce;
-        lander.OnRightForce += Lander_OnRightForce;
-        lander.OnNoForce += Lander_OnNoForce;
+        Lander.Instance.OnUpForce += Lander_OnUpForce;
+        Lander.Instance.OnLeftForce += Lander_OnLeftForce;
+        Lander.Instance.OnRightForce += Lander_OnRightForce;
+        Lander.Instance.OnNoForce += Lander_OnNoForce;
 
         SetEnabledThrustParticleSystem(leftThrusterParticleSystem, false);
         SetEnabledThrustParticleSystem(centerThrusterParticleSystem, false);

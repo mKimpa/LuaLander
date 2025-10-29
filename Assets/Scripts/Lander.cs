@@ -7,10 +7,19 @@ using UnityEngine.InputSystem;
 public class Lander : MonoBehaviour
 {
 
+    public static Lander Instance {  get; private set; }
+
     public event EventHandler OnUpForce;
     public event EventHandler OnLeftForce;
     public event EventHandler OnRightForce;
     public event EventHandler OnNoForce;
+    public event EventHandler OnCoinPickup;
+    public event EventHandler<OnLandedEventArgs> OnLanded;
+    
+    public class OnLandedEventArgs : EventArgs
+    {
+        public int score;
+    }
 
     private Rigidbody2D landerRiggedbody2D = null;
 
@@ -30,6 +39,7 @@ public class Lander : MonoBehaviour
     {
         landerRiggedbody2D = GetComponent<Rigidbody2D>();
         fuelAmount = fuelCapacity;
+        Instance = this;
     }
 
     private void FixedUpdate()
@@ -89,8 +99,6 @@ public class Lander : MonoBehaviour
             return;
         }
 
-        Debug.Log("landed");
-
         float landingSpeedScore = (softLandingVelociyMagnitude - relativeVelocityMagnitude) * maxScoreAmountLandingSpeed;
         float landingAngleScore = maxScoreAmountLandingAngle - Mathf.Abs(dotVector - 1f) * scoreDotVectorMultiplyer * maxScoreAmountLandingAngle;
 
@@ -100,7 +108,7 @@ public class Lander : MonoBehaviour
 
         int score = Mathf.RoundToInt((landingAngleScore + landingSpeedScore) * landingPad.GetScoreMultiplyer());
 
-        Debug.Log("score: " + score);
+        OnLanded?.Invoke(this, new OnLandedEventArgs { score = score });
     }
 
     private void OnTriggerEnter2D(Collider2D collider2D)

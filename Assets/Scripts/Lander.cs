@@ -1,5 +1,6 @@
 using System;
 using Unity.VisualScripting;
+using UnityEditor.Tilemaps;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,6 +14,9 @@ public class Lander : MonoBehaviour
 
     private Rigidbody2D landerRiggedbody2D = null;
 
+    private float fuelConsumptionAmmount = 1;
+    private float fuelAmount = 0;
+
     [SerializeField] private float force = 700f;
     [SerializeField] private float turnSpeed = 100f;
     [SerializeField] private float softLandingVelociyMagnitude = 4f;
@@ -20,20 +24,34 @@ public class Lander : MonoBehaviour
     [SerializeField] private float maxScoreAmountLandingAngle = 100f;
     [SerializeField] private float scoreDotVectorMultiplyer = 10f;
     [SerializeField] private float maxScoreAmountLandingSpeed = 100f;
+    [SerializeField] private float fuelCapacity = 30;
 
     private void Awake()
     {
         landerRiggedbody2D = GetComponent<Rigidbody2D>();
+        fuelAmount = fuelCapacity;
     }
 
     private void FixedUpdate()
     {
         OnNoForce?.Invoke(this, EventArgs.Empty);
 
+        if (fuelAmount <= 0f)
+        {
+            return;
+        }
+
+        if (Keyboard.current.upArrowKey.IsPressed() ||
+            Keyboard.current.leftArrowKey.IsPressed() ||
+            Keyboard.current.rightArrowKey.IsPressed())
+        {
+            ConsumeFuel();
+        }
+
         if (Keyboard.current.upArrowKey.IsPressed())
         {
             landerRiggedbody2D.AddForce(force * transform.up * Time.deltaTime);
-            OnUpForce?.Invoke(this, EventArgs.Empty);
+            OnUpForce?.Invoke(this, EventArgs.Empty);        
         }
 
         if (Keyboard.current.leftArrowKey.IsPressed())
@@ -83,5 +101,23 @@ public class Lander : MonoBehaviour
         int score = Mathf.RoundToInt((landingAngleScore + landingSpeedScore) * landingPad.GetScoreMultiplyer());
 
         Debug.Log("score: " + score);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collider2D)
+    {
+        if (collider2D.gameObject.TryGetComponent(out FuelPickup fuelPickup))
+        {
+            AddFuel(fuelPickup.GetFuelAmount());
+            fuelPickup.DestroySelf();
+        }
+    }
+    private void ConsumeFuel()
+    {
+        fuelAmount -= Mathf.Min(fuelConsumptionAmmount * Time.deltaTime, fuelAmount);
+    }
+
+    private void AddFuel(float amount)
+    {
+        fuelAmount += Mathf.Min(amount, fuelCapacity - fuelAmount);
     }
 }

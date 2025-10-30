@@ -21,7 +21,7 @@ public class LandedUI : MonoBehaviour
         }
         else
         {
-            titleTextMesh.text = "<color=ff0000>CRASH! </color>";
+            titleTextMesh.text = "CRASH!";
         }
 
         statsTextMesh.text =

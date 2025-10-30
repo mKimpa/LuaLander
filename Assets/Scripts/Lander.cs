@@ -128,4 +128,17 @@ public class Lander : MonoBehaviour
     {
         fuelAmount += Mathf.Min(amount, fuelCapacity - fuelAmount);
     }
+    public float GetSpeedX()
+    {
+        return landerRiggedbody2D.linearVelocityX;
+    }
+
+    public float GetSpeedY()
+    {
+        return landerRiggedbody2D.linearVelocityY;
+    }
+    public float GetFuelAlpha()
+    {
+        return fuelAmount / fuelCapacity;
+    }
 }

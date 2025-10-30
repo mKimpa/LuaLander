@@ -3,14 +3,31 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-
+    public static GameManager Instance;
     private int score;
+    private float time = 0f;
+
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void Update()
+    {
+        time += Time.deltaTime;
+    }
 
     public int GetScore()
     {
         return score;
     }
 
+    public float GetTime()
+    {
+        return time;
+    }
+    
     public void AddScore(int inScore)
     {
         score += inScore;

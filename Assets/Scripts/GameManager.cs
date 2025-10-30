@@ -35,7 +35,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        Lander.Instance.OnCoinPickup += Lander_OnCoinPickup;
+        //Lander.Instance.OnCoinPickup += Lander_OnCoinPickup;
         Lander.Instance.OnLanded += Lander_OnLanded;
     }
 
